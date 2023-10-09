@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Редактировать - ShareStepik{% endblock title %}
+{% block header %}
+    {{ form.media.css }}
+{% endblock header %}
+{% block body %}
+<div class="col-8" style="margin-top: 100px">
+    <form method="post" action="/specialization/{{ id_page }}/edit">
+        {% csrf_token %}
+        {{ form.as_p }}
+      <button type="submit" class="btn btn-success" style="background-color: #54ad54">Сохранить</button>
+    </form>
+</div>
+{% endblock body %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{ form.media.js }}
+{% endblock scripts %}

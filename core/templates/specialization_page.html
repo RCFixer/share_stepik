@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ spage.title }} - ShareStepik{% endblock title %}
+{% block header %}
+<style>
+.line-limit-length {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 20ch;
+}
+</style>
+{% endblock header %}
+{% block body %}
+
+<div class="row col-12" style="margin-top: 50px;">
+
+    <div class="d-flex justify-content-between">
+        <div><h2>{{ spage.title }}</h2></div>
+        {% if request.user.is_staff %}
+        <div>
+            <a href="{{ spage.id }}/edit" class="btn btn-warning">Редактировать</a>
+            <a href="{{ spage.id }}/delete" class="btn btn-danger">Удалить</a>
+        </div>
+        {% endif %}
+    </div>
+    <div style="margin: 20px 0" class="ya-share2" data-curtain data-size="l" data-color-scheme="blackwhite" data-services="vkontakte,telegram,twitter,viber,whatsapp,linkedin"></div>
+
+    {% for page in spage.sharepage_set.all %}
+            <div class="card" style="margin: 25px 0px">
+              <div class="card-body">
+                <h5 class="card-title">{{ page.title }}</h5>
+                  <div class="row">
+                  {% for course in page.courses.all %}
+                      <div class="row g-0 border rounded overflow-hidden mb-4 shadow-sm col-3" style="width: auto; margin-right:10px">
+                         <div class="col-auto d-none d-lg-block">
+                            <img src={{ course.image_src }} style="width: 100px">
+                        </div>
+                        <div class="col p-4 d-flex flex-column position-static">
+                          <h5 class="mb-0 line-limit-length"><a href="{{ course.link }}" target="_blank" style="color: inherit; text-decoration: inherit;">{{ course.title }}</a></h5>
+                        </div>
+                      </div>
+                  {% endfor %}
+                  </div>
+<!--                <a href={{ page.id }} class="btn btn-success" style="background-color: #54ad54">Открыть</a>-->
+                  {% if request.user.is_staff %}
+                  <div class="d-flex justify-content-between">
+                    <div>
+                        <a href="/edit/{{ page.id }}" class="btn btn-warning">Редактировать</a>
+                        <a href="/delete/{{ page.id }}" class="btn btn-danger">Удалить</a>
+                    </div>
+                  </div>
+                  {% endif %}
+              </div>
+            </div>
+        {% endfor %}
+    {% if request.user.is_staff %}
+        <a href="/specialization/{{ spage.id }}/add" class="btn btn-success" style="margin-bottom: 25px">Добавить подборку к специализации</a>
+    {% endif %}
+</div>
+
+{% endblock body %}
+{% block scripts %}
+<script src="https://yastatic.net/share2/share.js"></script>
+{% endblock scripts %}

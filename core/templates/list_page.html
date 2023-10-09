@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Главная - список подборок{% endblock title %}
+{% block header %}
+<style>
+.line-limit-length {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 20ch;
+}
+
+.multiple-card-slider .carousel-inner {
+  padding: 1em;
+}
+.multiple-card-slider .card {
+  margin: 0 0.5em;
+  box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
+  border: none;
+}
+.multiple-card-slider .carousel-control-prev,
+.multiple-card-slider .carousel-control-next {
+  background-color: #e1e1e1;
+  width: 3em;
+  height: 3em;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+@media (min-width: 768px) {
+  .multiple-card-slider .carousel-item {
+    margin-right: 0;
+    flex: 0 0 calc(100% / 3);
+    display: block;
+    backface-visibility: visible;
+  }
+  .multiple-card-slider .carousel-inner {
+    display: flex;
+  }
+}
+
+
+
+.btn-label {
+	position: relative;
+	left: -12px;
+	display: inline-block;
+	padding: 0px 12px;
+	border-radius: 3px 0 0 3px;
+}
+
+.btn-labeled {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+</style>
+
+{% endblock header %}
+{% block body %}
+    <div class="col-12">
+        {% for page in pages %}
+            <div class="multiple-card-slider border border-success p-4 mb-4 border-opacity-50 rounded" style="margin: 50px 0px; padding: 10px">
+                <div class="d-flex justify-content-between">
+                    <div><h3>{{ page.title }}</h3></div>
+                    <div>
+                        <button type="button" class="btn btn-labeled btn-danger">
+                            <span class="btn-label"><i class="fa fa-heart"></i></span>{{ page.likes }}
+                         </button>
+                        <a href={{ page.id }} class="btn btn-success" style="background-color: #54ad54">Открыть</a></div>
+                </div>
+                <div id="carouselExampleControls-{{forloop.counter}}" class="carousel" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for course in page.courses.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <a href="{{ course.link }}" target="_blank" style="color: inherit; text-decoration: inherit;">
+                            <div class="card">
+
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center pt-4">
+                                            <img src="{{ course.image_src }}" alt="" style="width: 100px">
+                                            <div style="margin-left: 10px">
+                                                <p class="card-title fw-bold">{{ course.title }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                            </div>
+                                </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+
+                    {% if page.courses.all|length > 3 %}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls-{{forloop.counter}}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls-{{forloop.counter}}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    {% endif %}
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock body %}
+
+{% block scripts %}
+<script>
+$('.multiple-card-slider .carousel').each(function(){
+    var currentCarouselId = '#' + $(this).attr('id');
+    const multipleItemCarousel = document.querySelector(currentCarouselId);
+
+    if(window.matchMedia("(min-width:576px)").matches){
+        const carousel = new bootstrap.Carousel(multipleItemCarousel, {
+            interval: true,
+            wrap: false
+        })
+        var carouselWidth = $(currentCarouselId + ' .carousel-inner')[0].scrollWidth;
+        var cardWidth = $(currentCarouselId + ' .carousel-item').width();
+        var scrollPosition = 0;
+        $(currentCarouselId + ' .carousel-control-next').on('click', function(){
+            if(scrollPosition < (carouselWidth - (cardWidth * 4))){
+                console.log('next');
+                scrollPosition = scrollPosition + cardWidth;
+                $(currentCarouselId + ' .carousel-inner').animate({scrollLeft: scrollPosition},600);
+            }
+        });
+        $(currentCarouselId + ' .carousel-control-prev').on('click', function(){
+            if(scrollPosition > 0){
+                console.log('prev');
+                scrollPosition = scrollPosition - cardWidth;
+                $(currentCarouselId + ' .carousel-inner').animate({scrollLeft: scrollPosition},600);
+            }
+        });
+    }else{
+        $(multipleItemCarousel).addClass('slide');
+    }
+});
+</script>
+{% endblock scripts %}

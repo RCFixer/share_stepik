@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} - ShareStepik{% endblock title %}
+{% block body %}
+
+<div class="row col-12" style="margin-top: 50px;">
+
+    <div class="d-flex justify-content-between">
+        <div><h2>{{ page.title }}</h2></div>
+        {% if request.user.is_staff %}
+        <div>
+            <a href="edit/{{ page.id }}" class="btn btn-warning">Редактировать</a>
+            <a href="delete/{{ page.id }}" class="btn btn-danger">Удалить</a>
+        </div>
+        {% endif %}
+    </div>
+    <div style="margin: 20px 0" class="ya-share2" data-curtain data-size="l" data-color-scheme="blackwhite" data-services="vkontakte,telegram,twitter,viber,whatsapp,linkedin"></div>
+    {% for course in page.courses.all %}
+    <div class="card mb-3">
+      <div class="row g-0">
+        <div class="col-1">
+          <img src="{{ course.image_src }}" class="img-fluid rounded-start" alt="..." style="width: 100px">
+        </div>
+        <div class="col-11">
+          <div class="card-body">
+            <h5 class="card-title">{{ course.title }}</h5>
+              <a href={{ course.link }} class="btn btn-success" style="background-color: #54ad54" target="_blank">Изучить</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock body %}
+{% block scripts %}
+<script src="https://yastatic.net/share2/share.js"></script>
+{% endblock scripts %}
